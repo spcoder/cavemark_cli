@@ -22,7 +22,7 @@ const (
 
 var rootCmd = &cobra.Command{
 	Use:     "cavemark",
-	Version: "1.0.0",
+	Version: "1.0.2",
 	Short:   "cavemark controls Cavemark instances",
 	Long:    `The cavemark command lets you control instances of Cavemark.`,
 }

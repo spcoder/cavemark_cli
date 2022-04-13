@@ -21,12 +21,14 @@ import (
 )
 
 var (
-	funcDir         string
-	staticDir       string
-	resourceDir     string
-	strategy        string
-	manualDeployKey string
-	watch           bool
+	funcDir            string
+	staticDir          string
+	defaultStaticDir   = "static"
+	resourceDir        string
+	defaultResourceDir = "resource"
+	strategy           string
+	manualDeployKey    string
+	watch              bool
 )
 
 const (
@@ -216,10 +218,8 @@ func bluegreen() error {
 	}
 	if deployKey == "blue" {
 		deployKey = "green"
-	} else if deployKey == "green" {
-		deployKey = "blue"
 	} else {
-		return fmt.Errorf("failed to get current deploy key")
+		deployKey = "blue"
 	}
 	return deploy(deployKey)
 }
@@ -338,6 +338,13 @@ func deployResources(deployKey string) error {
 	if resourceDir == "" {
 		return nil
 	}
+	_, err := os.Lstat(resourceDir)
+	if err != nil {
+		if strings.HasSuffix(err.Error(), "no such file or directory") && resourceDir == defaultResourceDir {
+			return nil
+		}
+		return err
+	}
 	p("resources", "starting to deploy resource files in '%s'\n", resourceDir)
 	files, err := globAll(resourceDir)
 	if err != nil {
@@ -369,6 +376,13 @@ func deployResources(deployKey string) error {
 func deployStatics(deployKey string) error {
 	if staticDir == "" {
 		return nil
+	}
+	_, err := os.Lstat(staticDir)
+	if err != nil {
+		if strings.HasSuffix(err.Error(), "no such file or directory") && staticDir == defaultStaticDir {
+			return nil
+		}
+		return err
 	}
 	p("statics", "starting to deploy static files in '%s'\n", staticDir)
 	files, err := globAll(staticDir)
@@ -437,6 +451,9 @@ func activateDeployment(deployKey string) error {
 func globAll(dir string) ([]string, error) {
 	files := make([]string, 0)
 	err := filepath.Walk(dir, func(path string, f os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if f.IsDir() {
 			return nil
 		}
@@ -486,7 +503,7 @@ func init() {
 	rootCmd.AddCommand(deployCmd)
 
 	funcDir = resolveStringFlag(funcDir, cavemarkFuncDir, "src")
-	resourceDir = resolveStringFlag(resourceDir, cavemarkResourceDir, "resource")
-	staticDir = resolveStringFlag(staticDir, cavemarkStaticDir, "static")
+	resourceDir = resolveStringFlag(resourceDir, cavemarkResourceDir, defaultResourceDir)
+	staticDir = resolveStringFlag(staticDir, cavemarkStaticDir, defaultStaticDir)
 	strategy = resolveStringFlag(strategy, cavemarkStaticDir, "bluegreen")
 }

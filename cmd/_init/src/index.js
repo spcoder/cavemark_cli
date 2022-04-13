@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-unused-vars
+// noinspection JSUnusedGlobalSymbols
 const main = (namespace) => {
   const { router, response, mustache } = namespace;
 

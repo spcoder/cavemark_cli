@@ -64,6 +64,11 @@ Examples:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		printDeployHeader(cmd.Parent().Version)
 
+		err := validate()
+		if err != nil {
+			return err
+		}
+
 		strategyFunc, err := resolveStrategy()
 		if err != nil {
 			return err
@@ -84,6 +89,19 @@ Examples:
 
 		return nil
 	},
+}
+
+func validate() error {
+	if url == "" {
+		return errors.New("url is required")
+	}
+	if apiKey == "" {
+		return errors.New("api key is required")
+	}
+	if apiSecretKey == "" {
+		return errors.New("api secret key is required")
+	}
+	return nil
 }
 
 type strategyFunction func() error
@@ -258,7 +276,7 @@ func deploy(deployKey string) error {
 }
 
 func getDeployKey() (string, error) {
-	resp, err := httpGet(fmt.Sprintf("%s/deploy", url))
+	resp, err := httpGet(fmt.Sprintf("%s/cvmrk/cli/deploy", url))
 	if err != nil {
 		return "", err
 	}
@@ -274,7 +292,7 @@ func deploySecrets(deployKey string) error {
 	p("secrets", "starting to deploy secrets\n")
 	for _, v := range envSecrets() {
 		p("secrets", "deploying %s", v.key)
-		resp, err := httpPut(fmt.Sprintf("%s/deploy/%s/secret/%s", url, deployKey, v.key), "text/plain", strings.NewReader(v.value))
+		resp, err := httpPut(fmt.Sprintf("%s/cvmrk/cli/deploy/%s/secret/%s", url, deployKey, v.key), "text/plain", strings.NewReader(v.value))
 		if err != nil {
 			return fmt.Errorf("error deploying secret (%s): %w", v.key, err)
 		}
@@ -320,7 +338,7 @@ func deployFunction(deployKey string) error {
 	p("", " [OK]\n")
 
 	p("functions", "deploying bundle")
-	resp, err := httpPut(fmt.Sprintf("%s/deploy/%s/function", url, deployKey), "text/plain", bytes.NewReader(content))
+	resp, err := httpPut(fmt.Sprintf("%s/cvmrk/cli/deploy/%s/function", url, deployKey), "text/plain", bytes.NewReader(content))
 	if err != nil {
 		return fmt.Errorf("error deploying bundle: %w", err)
 	}
@@ -358,7 +376,7 @@ func deployResources(deployKey string) error {
 		}
 		filePath := filepath.ToSlash(removeDir(f, resourceDir))
 		contentType := http.DetectContentType(contents)
-		resp, err := httpPut(fmt.Sprintf("%s/deploy/%s/resource/%s", url, deployKey, filePath), contentType, bytes.NewReader(contents))
+		resp, err := httpPut(fmt.Sprintf("%s/cvmrk/cli/deploy/%s/resource/%s", url, deployKey, filePath), contentType, bytes.NewReader(contents))
 		if err != nil {
 			return fmt.Errorf("error deploying resource file (%s): %w", f, err)
 		}
@@ -397,7 +415,7 @@ func deployStatics(deployKey string) error {
 		}
 		filePath := filepath.ToSlash(removeDir(f, staticDir))
 		contentType := http.DetectContentType(contents)
-		resp, err := httpPut(fmt.Sprintf("%s/deploy/%s/static/%s", url, deployKey, filePath), contentType, bytes.NewReader(contents))
+		resp, err := httpPut(fmt.Sprintf("%s/cvmrk/cli/deploy/%s/static/%s", url, deployKey, filePath), contentType, bytes.NewReader(contents))
 		if err != nil {
 			return fmt.Errorf("error deploying static file (%s): %w", f, err)
 		}
@@ -422,7 +440,7 @@ func removeDir(f, dir string) string {
 
 func beginDeployment(deployKey string) error {
 	p("begin", "starting deployment %s\n", deployKey)
-	resp, err := httpPost(fmt.Sprintf("%s/deploy/%s/begin", url, deployKey), "text/plain", nil)
+	resp, err := httpPost(fmt.Sprintf("%s/cvmrk/cli/deploy/%s/begin", url, deployKey), "text/plain", nil)
 	if err != nil {
 		return fmt.Errorf("error starting deployment: %w", err)
 	}
@@ -436,7 +454,7 @@ func beginDeployment(deployKey string) error {
 
 func activateDeployment(deployKey string) error {
 	p("activate", "starting to activate %s\n", deployKey)
-	resp, err := httpPost(fmt.Sprintf("%s/deploy/%s/activate", url, deployKey), "text/plain", nil)
+	resp, err := httpPost(fmt.Sprintf("%s/cvmrk/cli/deploy/%s/activate", url, deployKey), "text/plain", nil)
 	if err != nil {
 		return fmt.Errorf("error activating deployment: %w", err)
 	}

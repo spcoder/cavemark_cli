@@ -11,7 +11,7 @@ import (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "initialize a project",
+	Short: "Initialize a project",
 	Long: `Initializes a Cavemark project.
 
 Example:

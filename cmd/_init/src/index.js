@@ -1,11 +1,10 @@
 // noinspection JSUnusedGlobalSymbols
 const main = (namespace) => {
-  const { router, response, mustache } = namespace;
+  const { router, response } = namespace.v1;
 
-  // routes
-  router.get('/', () => mustache.html('home'));
+  router.get('/', () => response.ok("Let's go!"));
 
   if (!router.route(namespace)) {
-    response.notFound('Oops');
+    response.notFound('Not found');
   }
 };

@@ -1,5 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 interface namespace {
+    v1: v1
+}
+
+interface v1 {
     response: Response;
     request: Request;
     router: Router;

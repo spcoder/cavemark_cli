@@ -1,3 +1,4 @@
-# a cavemark application
+# my cavemark application
 
-add your cool notes here
+1. fill out the `.env` file
+2. run `npm run deploy`

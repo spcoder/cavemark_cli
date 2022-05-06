@@ -12,8 +12,8 @@ import (
 
 var getCmd = &cobra.Command{
 	Use:   "get",
-	Short: "retrieves Cavemark information.",
-	Long: `Retrieves information about a Cavemark instance.
+	Short: "retrieves app information.",
+	Long: `Retrieves information about an application.
 
 Example:
   # activates the code running in the 'example' deployment at https://example.com
@@ -48,7 +48,7 @@ type DeploymentSummary struct {
 }
 
 func printDeployList() error {
-	resp, err := httpGet(fmt.Sprintf("%s/deploy/list", url))
+	resp, err := httpGet(fmt.Sprintf("%s/cli/deploy/list", url))
 	if err != nil {
 		return err
 	}
@@ -80,5 +80,5 @@ func printDeployList() error {
 func init() {
 	getCmd.AddCommand(getDeployKeyCmd)
 	getCmd.AddCommand(getDeployListCmd)
-	rootCmd.AddCommand(getCmd)
+	//rootCmd.AddCommand(getCmd)
 }

@@ -32,5 +32,5 @@ func printActivateHeader(version string) {
 
 func init() {
 	activateCmd.Flags().StringVarP(&activateDeployKey, "deploy-key", "k", "", fmt.Sprintf("the deployment key to activate"))
-	rootCmd.AddCommand(activateCmd)
+	//rootCmd.AddCommand(activateCmd)
 }

@@ -16,6 +16,8 @@ interface v1 {
 }
 
 interface Router {
+    useStatic(): Router;
+
     get(path: string, handler: (namespace: never) => void): Router;
 
     get(path: string, middleware: (namespace: never) => void, handler: (namespace: never) => void): Router;

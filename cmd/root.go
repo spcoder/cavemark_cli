@@ -22,7 +22,7 @@ const (
 
 var rootCmd = &cobra.Command{
 	Use:     "cavemark",
-	Version: "1.1.0",
+	Version: "1.1.1",
 	Short:   "Cavemark application manager",
 }
 
@@ -42,7 +42,7 @@ func init() {
 		url = os.Getenv(cavemarkUrl)
 	}
 	if url == "" {
-		url = "https://platform.apps.cavemark.com"
+		url = "https://deploy.apps.cavemark.com"
 	}
 
 	if apiKey == "" {

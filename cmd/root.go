@@ -41,6 +41,9 @@ func init() {
 	if url == "" {
 		url = os.Getenv(cavemarkUrl)
 	}
+	if url == "" {
+		url = "https://platform.apps.cavemark.com"
+	}
 
 	if apiKey == "" {
 		apiKey = os.Getenv(cavemarkApiKey)

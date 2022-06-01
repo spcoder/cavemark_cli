@@ -523,5 +523,5 @@ func init() {
 	funcDir = resolveStringFlag(funcDir, cavemarkFuncDir, "src")
 	resourceDir = resolveStringFlag(resourceDir, cavemarkResourceDir, defaultResourceDir)
 	staticDir = resolveStringFlag(staticDir, cavemarkStaticDir, defaultStaticDir)
-	strategy = resolveStringFlag(strategy, cavemarkStaticDir, "bluegreen")
+	strategy = resolveStringFlag(strategy, cavemarkStrategy, "bluegreen")
 }

@@ -101,7 +101,50 @@ func validate() error {
 	if apiSecretKey == "" {
 		return errors.New("api secret key is required")
 	}
+	indexExists, err := indexFunctionExists()
+	if err != nil {
+		return err
+	}
+	staticsExist, err := staticFilesExist()
+	if err != nil {
+		return err
+	}
+	if !indexExists && !staticsExist {
+		return errors.New("no index.js or static files to deploy")
+	}
 	return nil
+}
+
+func indexFunctionExists() (bool, error) {
+	_, err := os.Lstat(path.Join(funcDir, "index.js"))
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
+func staticFilesExist() (bool, error) {
+	if staticDir == "" {
+		return false, nil
+	}
+	_, err := os.Lstat(staticDir)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	files, err := globAll(staticDir)
+	if err != nil {
+		return false, err
+	}
+	if len(files) == 0 {
+		return false, nil
+	}
+	return true, nil
 }
 
 type strategyFunction func() error
@@ -329,6 +372,13 @@ func bundle() ([]byte, error) {
 }
 
 func deployFunction(deployKey string) error {
+	indexExists, err := indexFunctionExists()
+	if err != nil {
+		return err
+	}
+	if !indexExists {
+		return nil
+	}
 	p("functions", "starting to deploy functions in '%s'\n", funcDir)
 	p("functions", "creating bundle")
 	content, err := bundle()

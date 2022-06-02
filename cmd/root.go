@@ -22,7 +22,7 @@ const (
 
 var rootCmd = &cobra.Command{
 	Use:     "cavemark",
-	Version: "1.1.1",
+	Version: "1.1.2",
 	Short:   "Cavemark application manager",
 }
 

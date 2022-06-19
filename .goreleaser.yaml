@@ -1,20 +1,40 @@
+project_name: cavemark
 builds:
-  - env:
-      - CGO_ENABLED=0
+  - id: darwin
+    env:
+    - CGO_ENABLED=0
     goos:
-      - linux
-      - windows
       - darwin
     goarch:
       - amd64
       - arm64
+  - id: windows
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+  - id: linux
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+universal_binaries:
+  - ids:
+    - darwin
+    replace: true
 archives:
   - replacements:
       darwin: macOS
       linux: Linux
       windows: Windows
-      386: 32-bit
-      amd64: 64-bit
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}"
+    format_overrides:
+      - goos: windows
+        format: zip
 checksum:
   name_template: 'checksums.txt'
 changelog:

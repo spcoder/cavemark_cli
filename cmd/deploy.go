@@ -212,7 +212,7 @@ func startWatching(fn strategyFunction) error {
 	}()
 
 	err = filepath.WalkDir(funcDir, func(path string, d fs.DirEntry, err error) error {
-		if d.IsDir() {
+		if d != nil && d.IsDir() {
 			p("watch", path+"\n")
 			return watcher.Add(path)
 		}
@@ -220,7 +220,7 @@ func startWatching(fn strategyFunction) error {
 	})
 	if resourceDir != "" {
 		err = filepath.WalkDir(resourceDir, func(path string, d fs.DirEntry, err error) error {
-			if d.IsDir() {
+			if d != nil && d.IsDir() {
 				p("watch", path+"\n")
 				return watcher.Add(path)
 			}
@@ -229,7 +229,7 @@ func startWatching(fn strategyFunction) error {
 	}
 	if staticDir != "" {
 		err = filepath.WalkDir(staticDir, func(path string, d fs.DirEntry, err error) error {
-			if d.IsDir() {
+			if d != nil && d.IsDir() {
 				p("watch", path+"\n")
 				return watcher.Add(path)
 			}
